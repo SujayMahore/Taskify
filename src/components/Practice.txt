@@ -64,17 +64,17 @@ const VideoPlayer = () => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  // const handleProgressBarClick = (e) => {
-  //   const video = videoRef.current;
-  //   const progressBarContainer = e.currentTarget;
-  //   const rect = e.target.getBoundingClientRect();
-  //   const offsetX = e.clientX - rect.left;
-  //   const progressBarWidth = rect.width;
-  //   const newTime = (offsetX / progressBarWidth) * video.duration;
+  const handleProgressBarClick = (e) => {
+    const video = videoRef.current;
+    const progressBarContainer = e.currentTarget;
+    const rect = e.target.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const progressBarWidth = rect.width;
+    const newTime = (offsetX / progressBarWidth) * video.duration;
 
-  //   video.currentTime = newTime;
-  //   setCurrentTime(newTime);
-  // };
+    video.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
 
   const handleForward = () => {
     const video = videoRef.current;
@@ -123,31 +123,31 @@ const VideoPlayer = () => {
       videoRef.current.requestPictureInPicture();
     }
   };
-  function enterFS() {
-    const videoContainer = videoRef.current;
+  // function enterFS() {
+  //   const videoContainer = videoRef.current;
 
-    if (videoContainer.requestFullscreen) {
-      videoContainer.requestFullscreen();
-    } else if (videoContainer.msRequestFullscreen) {
-      videoContainer.msRequestFullscreen();
-    } else if (videoContainer.mozRequestFullScreen) {
-      videoContainer.mozRequestFullScreen();
-    } else if (videoContainer.webkitRequestFullscreen) {
-      videoContainer.webkitRequestFullscreen();
-    }
-  }
+  //   if (videoContainer.requestFullscreen) {
+  //     videoContainer.requestFullscreen();
+  //   } else if (videoContainer.msRequestFullscreen) {
+  //     videoContainer.msRequestFullscreen();
+  //   } else if (videoContainer.mozRequestFullScreen) {
+  //     videoContainer.mozRequestFullScreen();
+  //   } else if (videoContainer.webkitRequestFullscreen) {
+  //     videoContainer.webkitRequestFullscreen();
+  //   }
+  // }
   
-  function exitFS() {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    }
-  }
+  // function exitFS() {
+  //   if (document.exitFullscreen) {
+  //     document.exitFullscreen();
+  //   } else if (document.msExitFullscreen) {
+  //     document.msExitFullscreen();
+  //   } else if (document.mozCancelFullScreen) {
+  //     document.mozCancelFullScreen();
+  //   } else if (document.webkitExitFullscreen) {
+  //     document.webkitExitFullscreen();
+  //   }
+  // }
 
   const togglePlaybackSpeed = () => {
     let newSpeed = playbackSpeed + 0.25;
@@ -158,29 +158,6 @@ const VideoPlayer = () => {
     videoRef.current.playbackRate = newSpeed;
   };
 
-  const handleTimelineUpdate =(e) =>{
-    if(!isScrubbing) return;
-
-    const rect = timelineContainer.current.getBoundingClientRect();
-    const percent = Math.min(Math.max(0,e.clientX - rect.left) , rect.width);
-    const newTime = percent * videoRef.current.duration;
-
-    videoRef.current.CurrentTime=newTime;
-    setCurrentTime(newTime)
-
-
-  }
-  const handleTimelineMouseDown =(e)=>{
-    setIsScrubbing(true)
-    handleTimelineUpdate(e)
-  }
-  
-  const handleTimelineMouseUp =()=>{
-    if(isScrubbing){
-      setIsScrubbing(false)
-      videoRef.current.play()
-    }
-  }
   
 
 
@@ -208,7 +185,7 @@ const VideoPlayer = () => {
           }}
         ></video>
         <div className="video-controls z-50 absolute w-full bottom-0 left-0 p-4">
-          {/* <div
+          <div
             className="progress-bar-container z-50 w-full cursor-pointer bg-gray-300 h-[3px] relative mt-2"
             onClick={handleProgressBarClick}
           >
@@ -216,17 +193,8 @@ const VideoPlayer = () => {
               className="progress-bar bg-red-800 h-full"
               style={{ width: `${(currentTime / duration) * 100}%` }}
             ></div>
-          </div> */}
-          <div
-          ref={timelineContainer}
-          id="timeline-container"
-          className="timeline-container relative h-10 bg-gray-300"
-          onMouseDown={handleTimelineMouseDown}
-          onMouseUp={handleTimelineMouseUp}
-          onMouseMove={handleTimelineUpdate}>
-            <div className="thumb-indicator absolute top-0 bg-red-500 w-2 h-full" style={{left:`${(currentTime/duration)*100}%`}} ></div>
-
           </div>
+          
    
           <div className="flex flex-row items-center justify-between mx-4 ">
             <div className="flex flex-row items-center gap-3">
