@@ -15,6 +15,7 @@ import { document } from "postcss";
 const VideoPlayer = () => {
   const videoRef = useRef(null);
   const divRef = useRef(null);
+  const timelineContainer=useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -22,6 +23,7 @@ const VideoPlayer = () => {
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [playbackSpeed,setPlaybackSpeed] = useState(1);
+  const [isScrubbing,setIsScrubbing] = useState(false);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -62,17 +64,17 @@ const VideoPlayer = () => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  const handleProgressBarClick = (e) => {
-    const video = videoRef.current;
-    const progressBarContainer = e.currentTarget;
-    const rect = e.target.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const progressBarWidth = rect.width;
-    const newTime = (offsetX / progressBarWidth) * video.duration;
+  // const handleProgressBarClick = (e) => {
+  //   const video = videoRef.current;
+  //   const progressBarContainer = e.currentTarget;
+  //   const rect = e.target.getBoundingClientRect();
+  //   const offsetX = e.clientX - rect.left;
+  //   const progressBarWidth = rect.width;
+  //   const newTime = (offsetX / progressBarWidth) * video.duration;
 
-    video.currentTime = newTime;
-    setCurrentTime(newTime);
-  };
+  //   video.currentTime = newTime;
+  //   setCurrentTime(newTime);
+  // };
 
   const handleForward = () => {
     const video = videoRef.current;
@@ -155,58 +157,32 @@ const VideoPlayer = () => {
     setPlaybackSpeed(newSpeed);
     videoRef.current.playbackRate = newSpeed;
   };
+
+  const handleTimelineUpdate =(e) =>{
+    if(!isScrubbing) return;
+
+    const rect = timelineContainer.current.getBoundingClientRect();
+    const percent = Math.min(Math.max(0,e.clientX - rect.left) , rect.width);
+    const newTime = percent * videoRef.current.duration;
+
+    videoRef.current.CurrentTime=newTime;
+    setCurrentTime(newTime)
+
+
+  }
+  const handleTimelineMouseDown =(e)=>{
+    setIsScrubbing(true)
+    handleTimelineUpdate(e)
+  }
   
-//timeline progress
-  const timelineContainer = document.getElementById("timeline-container")
-  const videoContainer = document.getElementById(".video-container")
- 
-
-
-
-  timelineContainer.addEventListener("mousemove", handleTimelineUpdate)
-timelineContainer.addEventListener("mousedown", toggleScrubbing)
-document.addEventListener("mouseup", e => {
-  if (isScrubbing) toggleScrubbing(e)
-})
-document.addEventListener("mousemove", e => {
-  if (isScrubbing) handleTimelineUpdate(e)
-})
-
-let isScrubbing = false
-let wasPaused
-function toggleScrubbing(e) {
-  const rect = timelineContainer.getBoundingClientRect()
-  const percent = Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width
-  isScrubbing = (e.buttons & 1) === 1
-  videoContainer.classList.toggle("scrubbing", isScrubbing)
-  if (isScrubbing) {
-    wasPaused = video.paused
-    video.pause()
-  } else {
-    video.currentTime = percent * video.duration
-    if (!wasPaused) video.play()
+  const handleTimelineMouseUp =()=>{
+    if(isScrubbing){
+      setIsScrubbing(false)
+      videoRef.current.play()
+    }
   }
+  
 
-  handleTimelineUpdate(e)
-}
-
-function handleTimelineUpdate(e) {
-  const rect = timelineContainer.getBoundingClientRect()
-  const percent = Math.min(Math.max(0, e.x - rect.x), rect.width) / rect.width
-  const previewImgNumber = Math.max(
-    1,
-    Math.floor((percent * video.duration) / 10)
-  )
-  // const previewImgSrc = `assets/previewImgs/preview${previewImgNumber}.jpg`
-  // previewImg.src = previewImgSrc
-  // timelineContainer.style.setProperty("--preview-position", percent)
-
-  if (isScrubbing) {
-    e.preventDefault()
-    // thumbnailImg.src = previewImgSrc
-    timelineContainer.style.setProperty("--progress-position", percent)
-  }
-}
 
 
   return (
@@ -241,14 +217,17 @@ function handleTimelineUpdate(e) {
               style={{ width: `${(currentTime / duration) * 100}%` }}
             ></div>
           </div> */}
-             <div className="video-controls-container">
-      <div id="timeline-container" className="timeline-container">
-        <div className="timeline">
-          {/* <img class="preview-img"> */}
-          <div className="thumb-indicator"></div>
-        </div>
-        </div>
-      </div>
+          <div
+          ref={timelineContainer}
+          id="timeline-container"
+          className="timeline-container relative h-10 bg-gray-300"
+          onMouseDown={handleTimelineMouseDown}
+          onMouseUp={handleTimelineMouseUp}
+          onMouseMove={handleTimelineUpdate}>
+            <div className="thumb-indicator absolute top-0 bg-red-500 w-2 h-full" style={{left:`${(currentTime/duration)*100}%`}} ></div>
+
+          </div>
+   
           <div className="flex flex-row items-center justify-between mx-4 ">
             <div className="flex flex-row items-center gap-3">
               <button
