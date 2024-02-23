@@ -15,7 +15,6 @@ import { document } from "postcss";
 const VideoPlayer = () => {
   const videoRef = useRef(null);
   const divRef = useRef(null);
-  const timelineContainer=useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -24,7 +23,7 @@ const VideoPlayer = () => {
   const [fullscreen, setFullscreen] = useState(false);
   const [playbackSpeed,setPlaybackSpeed] = useState(1);
   const [isScrubbing,setIsScrubbing] = useState(false);
-
+const [prevVolume,setPrevVolume] = useState(1);
   const togglePlay = () => {
     const video = videoRef.current;
     if (video.paused) {
@@ -66,8 +65,8 @@ const VideoPlayer = () => {
 
   const handleProgressBarClick = (e) => {
     const video = videoRef.current;
-    const progressBarContainer = e.currentTarget;
-    const rect = e.target.getBoundingClientRect();
+    const progressBar = e.currentTarget;
+    const rect = progressBar.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
     const progressBarWidth = rect.width;
     const newTime = (offsetX / progressBarWidth) * video.duration;
@@ -99,23 +98,66 @@ const VideoPlayer = () => {
     setVolume(newVolume);
     videoRef.current.volume = newVolume;
   };
+  const toggleMute=()=>{
+    if(volume !== 0 ){
+      setPrevVolume(volume)
+      setVolume(0)
+      videoRef.current.volume = volume ;
 
-  const handleFullScreen = () => {
-    const videoContainer = videoRef.current;
-    // console.log(document.webkitIsFullscreen)
-
-    if (videoContainer.requestFullscreen) {
-      videoContainer.requestFullscreen();
-    } else if (videoContainer.msRequestFullscreen) {
-      videoContainer.msRequestFullscreen();
-    } else if (videoContainer.mozRequestFullScreen) {
-      videoContainer.mozRequestFullScreen();
-    } else if (videoContainer.webkitRequestFullscreen) {
-      videoContainer.webkitRequestFullscreen();
     }
-    setFullscreen(!fullscreen);
+    else{
+      setVolume(prevVolume)
+      videoRef.current.volume = volume;
 
-  };
+    }
+
+  }
+
+  const fullScreenEnter=()=>{
+    const element = divRef.current
+    
+    
+    element.requestFullscreen()
+
+
+  }
+  const fullScreenExit=()=>{
+    document.exitFullscreen()
+
+  }
+  // const handleFullScreen = () => {
+  //   const videoContainer = divRef.current;
+  //   // console.log(document.webkitIsFullscreen)
+
+  //  if(!fullscreen){
+  //   if (videoContainer.requestFullscreen) {
+  //     videoContainer.requestFullscreen();
+  //   } else if (videoContainer.msRequestFullscreen) {
+  //     videoContainer.msRequestFullscreen();
+  //   } else if (videoContainer.mozRequestFullScreen) {
+  //     videoContainer.mozRequestFullScreen();
+  //   } else if (videoContainer.webkitRequestFullscreen) {
+  //     videoContainer.webkitRequestFullscreen();
+  //   }
+  //  }
+  //  else{
+  //   if(document.exitFullscreen){
+  //     document.exitFullscreen();
+  //   }
+  //   else if(document.webkitExitFullscreen){
+  //     document.webkitExitFullscreen()
+
+  //   }
+  //   else if(document.msExitFullscreen){
+  //     document.msExitFullscreen()
+  //   }
+  //  }
+
+
+
+  //   setFullscreen(!fullscreen);
+
+  // };
   const togglePictureInPicture = () => {
     if (document.pictureInPictureElement) {
       document.exitPictureInPicture();
@@ -163,9 +205,9 @@ const VideoPlayer = () => {
 
 
   return (
-    <div ref={divRef}   className="video-player relative  w-full h-screen">
+    <div   className="video-player relative  w-full h-screen">
       
-      <div  id="video-container"  className={`video-container relative w-full h-4/5 `}>
+      <div ref={divRef}  id="video-container"  className={`video-container relative w-full h-4/5 `}>
         <video
         id="video"
           // controlsList="nodownload"
@@ -184,15 +226,15 @@ const VideoPlayer = () => {
             video.playbackRate = 1;
           }}
         ></video>
-        <div className="video-controls z-50 absolute w-full bottom-0 left-0 p-4">
+        <div className="video-controls opacity-0 hover:opacity-100 transition-all duration-300 bg-gradient-to-t from-black z-50 absolute w-full bottom-0 left-0 p-4">
           <div
-            className="progress-bar-container z-50 w-full cursor-pointer bg-gray-300 h-[3px] relative mt-2"
+            className="progress-bar-container hover:h-[6px] transition-all duration-300 z-50 w-full cursor-pointer bg-gray-300 h-[3px] relative mt-2"
             onClick={handleProgressBarClick}
           >
             <div
               className="progress-bar bg-red-800 h-full"
               style={{ width: `${(currentTime / duration) * 100}%` }}
-            ></div>
+            > </div>
           </div>
           
    
@@ -215,7 +257,7 @@ const VideoPlayer = () => {
                 <TbRewindForward5 color="white" size={26}></TbRewindForward5>
               </button>
               <div className="volume-container pt-1 flex items-center group">
-                <button className="">
+                <button onClick={toggleMute} className="">
                   {volume >= 0.5 && (
                     <FaVolumeHigh color="white" size={26}></FaVolumeHigh>
                   )}
@@ -228,7 +270,7 @@ const VideoPlayer = () => {
                 </button>
                 <input
                   type="range"
-                  className="h-1 w-0 scale-x-0 origin-left group-hover:w-full group-hover:scale-x-100 transition-all duration-300"
+                  className="h-1 ml-1 w-0 scale-x-0 origin-left group-hover:w-full group-hover:scale-x-100 transition-all duration-300"
                   min="0"
                   max="1"
                   step="any"
@@ -248,13 +290,13 @@ const VideoPlayer = () => {
               >
                 {playbackSpeed.toFixed(2)}x
               </button>
-              <button onClick={togglePictureInPicture}> 
+              <button onClick={fullScreenExit}> 
                 <MdPictureInPicture
                   color="white"
                   size={24}
                 ></MdPictureInPicture>
               </button>
-              <button onClick={handleFullScreen}>
+              <button onClick={fullScreenEnter}>
                 {fullscreen ? (
                   <MdFullscreenExit color="white" size={26}></MdFullscreenExit>
                 ) : (
