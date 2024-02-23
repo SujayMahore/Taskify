@@ -4,6 +4,8 @@ import { FaPlay, FaPause } from "react-icons/fa";
 import { TbRewindBackward5, TbRewindForward5 } from "react-icons/tb";
 import { FaVolumeHigh, FaVolumeLow, FaVolumeXmark } from "react-icons/fa6";
 import { RiFullscreenFill, RiFullscreenExitLine } from "react-icons/ri";
+import { TbMultiplier2X } from "react-icons/tb";
+
 import {
   MdFullscreen,
   MdFullscreenExit,
@@ -113,51 +115,41 @@ const [prevVolume,setPrevVolume] = useState(1);
 
   }
 
-  const fullScreenEnter=()=>{
-    const element = divRef.current
-    
-    
-    element.requestFullscreen()
+  
+  const handleFullScreen = () => {
+    const videoContainer = videoRef.current;
+    // console.log(document.webkitIsFullscreen)
 
+   if(!fullscreen){
+    if (videoContainer.requestFullscreen) {
+      videoContainer.requestFullscreen();
+    } else if (videoContainer.msRequestFullscreen) {
+      videoContainer.msRequestFullscreen();
+    } else if (videoContainer.mozRequestFullScreen) {
+      videoContainer.mozRequestFullScreen();
+    } else if (videoContainer.webkitRequestFullscreen) {
+      videoContainer.webkitRequestFullscreen();
+    }
 
-  }
-  const fullScreenExit=()=>{
-    document.exitFullscreen()
+   }
+   else{
+    if(document.exitFullscreen){
+      document.exitFullscreen();
+    }
+    else if(document.webkitExitFullscreen){
+      document.webkitExitFullscreen()
 
-  }
-  // const handleFullScreen = () => {
-  //   const videoContainer = divRef.current;
-  //   // console.log(document.webkitIsFullscreen)
-
-  //  if(!fullscreen){
-  //   if (videoContainer.requestFullscreen) {
-  //     videoContainer.requestFullscreen();
-  //   } else if (videoContainer.msRequestFullscreen) {
-  //     videoContainer.msRequestFullscreen();
-  //   } else if (videoContainer.mozRequestFullScreen) {
-  //     videoContainer.mozRequestFullScreen();
-  //   } else if (videoContainer.webkitRequestFullscreen) {
-  //     videoContainer.webkitRequestFullscreen();
-  //   }
-  //  }
-  //  else{
-  //   if(document.exitFullscreen){
-  //     document.exitFullscreen();
-  //   }
-  //   else if(document.webkitExitFullscreen){
-  //     document.webkitExitFullscreen()
-
-  //   }
-  //   else if(document.msExitFullscreen){
-  //     document.msExitFullscreen()
-  //   }
-  //  }
+    }
+    else if(document.msExitFullscreen){
+      document.msExitFullscreen()
+    }
+   }
 
 
 
-  //   setFullscreen(!fullscreen);
+    // setFullscreen(!fullscreen);
 
-  // };
+  };
   const togglePictureInPicture = () => {
     if (document.pictureInPictureElement) {
       document.exitPictureInPicture();
@@ -165,31 +157,7 @@ const [prevVolume,setPrevVolume] = useState(1);
       videoRef.current.requestPictureInPicture();
     }
   };
-  // function enterFS() {
-  //   const videoContainer = videoRef.current;
-
-  //   if (videoContainer.requestFullscreen) {
-  //     videoContainer.requestFullscreen();
-  //   } else if (videoContainer.msRequestFullscreen) {
-  //     videoContainer.msRequestFullscreen();
-  //   } else if (videoContainer.mozRequestFullScreen) {
-  //     videoContainer.mozRequestFullScreen();
-  //   } else if (videoContainer.webkitRequestFullscreen) {
-  //     videoContainer.webkitRequestFullscreen();
-  //   }
-  // }
   
-  // function exitFS() {
-  //   if (document.exitFullscreen) {
-  //     document.exitFullscreen();
-  //   } else if (document.msExitFullscreen) {
-  //     document.msExitFullscreen();
-  //   } else if (document.mozCancelFullScreen) {
-  //     document.mozCancelFullScreen();
-  //   } else if (document.webkitExitFullscreen) {
-  //     document.webkitExitFullscreen();
-  //   }
-  // }
 
   const togglePlaybackSpeed = () => {
     let newSpeed = playbackSpeed + 0.25;
@@ -290,13 +258,13 @@ const [prevVolume,setPrevVolume] = useState(1);
               >
                 {playbackSpeed.toFixed(2)}x
               </button>
-              <button onClick={fullScreenExit}> 
+              <button onClick={togglePictureInPicture}> 
                 <MdPictureInPicture
                   color="white"
                   size={24}
                 ></MdPictureInPicture>
               </button>
-              <button onClick={fullScreenEnter}>
+              <button onClick={handleFullScreen}>
                 {fullscreen ? (
                   <MdFullscreenExit color="white" size={26}></MdFullscreenExit>
                 ) : (
@@ -307,6 +275,7 @@ const [prevVolume,setPrevVolume] = useState(1);
           </div>
         </div>
       </div>
+     
     </div>
   );
 };
