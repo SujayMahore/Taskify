@@ -1,31 +1,20 @@
-import React, { useEffect, useRef, useState } from "react";
+ import React, { useEffect, useRef, useState } from "react";
 import video from "../assets/SampleVideo_1280x720_30mb.mp4";
-import { FaPlay, FaPause } from "react-icons/fa";
+import { FaPlay, FaPause, FaVolumeHigh, FaVolumeLow, FaVolumeXmark } from "react-icons/fa";
 import { TbRewindBackward5, TbRewindForward5 } from "react-icons/tb";
-import { FaVolumeHigh, FaVolumeLow, FaVolumeXmark } from "react-icons/fa6";
 import { RiFullscreenFill, RiFullscreenExitLine } from "react-icons/ri";
-import { TbMultiplier2X } from "react-icons/tb";
-
-import {
-  MdFullscreen,
-  MdFullscreenExit,
-  MdPictureInPicture,
-  MdPictureInPictureAlt,
-} from "react-icons/md";
-import { document } from "postcss";
+import { MdFullscreen, MdFullscreenExit, MdPictureInPicture } from "react-icons/md";
 
 const VideoPlayer = () => {
   const videoRef = useRef(null);
-  const divRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(1); // State for volume, initially set to max
-  const [isMouseDown, setIsMouseDown] = useState(false);
+  const [volume, setVolume] = useState(1);
   const [fullscreen, setFullscreen] = useState(false);
   const [playbackSpeed,setPlaybackSpeed] = useState(1);
-  const [isScrubbing,setIsScrubbing] = useState(false);
-const [prevVolume,setPrevVolume] = useState(1);
+  const [prevVolume,setPrevVolume] = useState(1);
+
   const togglePlay = () => {
     const video = videoRef.current;
     if (video.paused) {
@@ -100,56 +89,46 @@ const [prevVolume,setPrevVolume] = useState(1);
     setVolume(newVolume);
     videoRef.current.volume = newVolume;
   };
-  const toggleMute=()=>{
+
+  const toggleMute = () => {
     if(volume !== 0 ){
       setPrevVolume(volume)
       setVolume(0)
       videoRef.current.volume = volume ;
-
     }
     else{
       setVolume(prevVolume)
       videoRef.current.volume = volume;
-
     }
+  };
 
-  }
-
-  
   const handleFullScreen = () => {
     const videoContainer = videoRef.current;
-    // console.log(document.webkitIsFullscreen)
 
-   if(!fullscreen){
-    if (videoContainer.requestFullscreen) {
-      videoContainer.requestFullscreen();
-    } else if (videoContainer.msRequestFullscreen) {
-      videoContainer.msRequestFullscreen();
-    } else if (videoContainer.mozRequestFullScreen) {
-      videoContainer.mozRequestFullScreen();
-    } else if (videoContainer.webkitRequestFullscreen) {
-      videoContainer.webkitRequestFullscreen();
+    if(!fullscreen){
+      if (videoContainer.requestFullscreen) {
+        videoContainer.requestFullscreen();
+      } else if (videoContainer.msRequestFullscreen) {
+        videoContainer.msRequestFullscreen();
+      } else if (videoContainer.mozRequestFullScreen) {
+        videoContainer.mozRequestFullScreen();
+      } else if (videoContainer.webkitRequestFullscreen) {
+        videoContainer.webkitRequestFullscreen();
+      }
     }
-
-   }
-   else{
-    if(document.exitFullscreen){
-      document.exitFullscreen();
+    else{
+      if(document.exitFullscreen){
+        document.exitFullscreen();
+      }
+      else if(document.webkitExitFullscreen){
+        document.webkitExitFullscreen();
+      }
+      else if(document.msExitFullscreen){
+        document.msExitFullscreen();
+      }
     }
-    else if(document.webkitExitFullscreen){
-      document.webkitExitFullscreen()
-
-    }
-    else if(document.msExitFullscreen){
-      document.msExitFullscreen()
-    }
-   }
-
-
-
-    // setFullscreen(!fullscreen);
-
   };
+
   const togglePictureInPicture = () => {
     if (document.pictureInPictureElement) {
       document.exitPictureInPicture();
@@ -157,28 +136,21 @@ const [prevVolume,setPrevVolume] = useState(1);
       videoRef.current.requestPictureInPicture();
     }
   };
-  
 
   const togglePlaybackSpeed = () => {
     let newSpeed = playbackSpeed + 0.25;
     if (newSpeed > 2.0) {
-      newSpeed = 0.25; // If it's already at 2.0x, toggle to -2.0x
+      newSpeed = 0.25;
     }
     setPlaybackSpeed(newSpeed);
     videoRef.current.playbackRate = newSpeed;
   };
 
-  
-
-
-
   return (
-    <div   className="video-player relative  w-full h-screen">
-      
-      <div ref={divRef}  id="video-container"  className={`video-container relative w-full h-4/5 `}>
+    <div className="video-player relative w-full h-screen">
+      <div id="video-container" className="video-container relative w-full h-4/5">
         <video
-        id="video"
-          // controlsList="nodownload"
+          id="video"
           className="w-full h-full object-cover"
           onKeyDown={handleKeyDown}
           tabIndex={0}
@@ -202,10 +174,8 @@ const [prevVolume,setPrevVolume] = useState(1);
             <div
               className="progress-bar bg-red-800 h-full"
               style={{ width: `${(currentTime / duration) * 100}%` }}
-            > </div>
+            ></div>
           </div>
-          
-   
           <div className="flex flex-row items-center justify-between mx-4 ">
             <div className="flex flex-row items-center gap-3">
               <button
@@ -225,7 +195,7 @@ const [prevVolume,setPrevVolume] = useState(1);
                 <TbRewindForward5 color="white" size={26}></TbRewindForward5>
               </button>
               <div className="volume-container pt-1 flex items-center group">
-                <button onClick={toggleMute} className="">
+                <button onClick={toggleMute}>
                   {volume >= 0.5 && (
                     <FaVolumeHigh color="white" size={26}></FaVolumeHigh>
                   )}
@@ -250,9 +220,8 @@ const [prevVolume,setPrevVolume] = useState(1);
                 {formatTime(currentTime)} / {formatTime(duration)}
               </div>
             </div>
-
             <div className="items-2 items-center flex gap-3">
-            <button 
+              <button 
                 className="playbackspeed text-white text-lg w-[50px]"
                 onClick={togglePlaybackSpeed}
               >
@@ -275,7 +244,6 @@ const [prevVolume,setPrevVolume] = useState(1);
           </div>
         </div>
       </div>
-     
     </div>
   );
 };
