@@ -3,12 +3,10 @@ import './App.css';
 import Dashboard from './components/Dashboard';
 import {Routes,Route,Link} from 'react-router-dom'
 import Tasks from './components/Tasks';
-import DemoTable from './components/DemoTable';
 
 function App() {
   return (
     <div className="App">
-      {/* <DemoTable></DemoTable> */}
     
       
 

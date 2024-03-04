@@ -24,7 +24,7 @@ export default function TaskDetailsModal({ entry }) {
       </div>
 
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10 overflow-x-auto" onClose={closeModal}>
+        <Dialog as="div" className="relative z-10 overflow-hidden" onClose={closeModal}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -55,13 +55,13 @@ export default function TaskDetailsModal({ entry }) {
                   >
                     Task Details
                   </Dialog.Title>
-                  <div className="mt-2 flex flex-col ">
+                  <div className="mt-2 flex flex-col text-wrap ">
                     <p className="  capitalize text-gray-900 ">
                       <span className="font-bold"> Title :</span> {entry.title}
                     </p>
                     <p className="  capitalize text-gray-900 ">
                       <span className="font-bold"> Description :</span>
-                      {entry.taskDetails}
+                      <span className=" text-wrap">{entry.taskDetails}</span>
                     </p>
                     <p className="  capitalize text-gray-900 ">
                       <span className="font-bold"> Start Date :</span>

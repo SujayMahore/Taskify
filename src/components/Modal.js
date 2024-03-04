@@ -58,9 +58,9 @@ export default function Modal({ updateData }) {
         <button
           type="button"
           onClick={openModal}
-          className="rounded-md bg-fernGreen px-4 py-2 mb-1 text-sm font-roboto text-white hover:bg-hunterGreen focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
+          className="max-sm:w-60 max-sm:ml-6 rounded-lg bg-fernGreen px-4 py-2 shadow-md mt-1 mb-1 text-sm font-roboto text-white hover:bg-hunterGreen focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75"
         >
-          <div className="flex items-center gap-1"> <IoMdAdd size={18} ></IoMdAdd> <span >  New Task</span> </div>
+          <div className="md:flex items-center gap-1"> <span >  New Task</span> </div>
         </button>
       </div>
       <div className="flex justify-center ">

@@ -73,7 +73,7 @@ const Tasks = () => {
         progressvar++;
       } else if (task.status === "completed") {
         completedTask++;
-      } else if (task.status === "overdue") {
+      } else if (task.status === "Overdue") {
         due++;
       }
     }
@@ -108,7 +108,7 @@ const Tasks = () => {
       try {
         const response = await axios.get(
           `http://localhost:8080/tasks/getTask/sort`,
-          { params: {status , order} }
+          { params: { status, order } }
         );
         setData(response.data);
         console.log("Sort Api Hit");
@@ -135,7 +135,7 @@ const Tasks = () => {
       ></TaskMeter>
 
       {/* Table */}
-      <div className="flex flex-col w-full h-full font-inter   text-gray-300 px-5 py-4 overflow-x-auto overflow-y-auto">
+      <div className="flex flex-col w-full h-full font-barlow   text-gray-300 px-5 py-4 overflow-x-auto overflow-y-auto">
         {/* <div className="mx-2">
           <div>
             <Modal updateData={updateData}></Modal>
@@ -166,7 +166,7 @@ const Tasks = () => {
                 <option value="in progress" className="bg-transparent">
                   In Progress
                 </option>
-                <option value="overdue" className="bg-transparent">
+                <option value="Overdue" className="bg-transparent">
                   Overdue
                 </option>
               </select>
@@ -175,7 +175,7 @@ const Tasks = () => {
               <table className="  table-auto w-full border-separate space-y-6 border-spacing-y-6   ">
                 <thead className="  font-bold  ">
                   <tr>
-                    <td className="  p-3 text-left ">Title</td>
+                    <td className="p-3 text-left ">Title</td>
                     <td className=" p-3 text-left  ">Status</td>
                     <td className="  p-3 text-left  ">
                       <div className="flex items-center gap-1">
@@ -206,37 +206,42 @@ const Tasks = () => {
                 <tbody className=" ">
                   {filteredTasks.map((entry) => (
                     <tr
-                      className=" rounded-md cursor-pointer duration-300  bg-lightBlackOlive  hover:bg-hunterGreen "
+                      className=" rounded-md cursor-pointer duration-300  bg-lightBlackOlive  hover:bg-emerald-950"
                       key={entry.taskId}
                     >
-                      <td className="  p-3 rounded-l-lg  ">{entry.title}</td>
-                      <td className=" p-3  ">
+                      <td className="   p-3 rounded-l-lg truncate  ">
+                        {entry.title}
+                      </td>
+                      <td className=" p-3 truncate ">
                         <span
                           className={classNames(
-                            entry.status === "overdue" ? "bg-red-500" : "",
+                            entry.status === "Overdue" ? "bg-red-500" : "",
                             entry.status === "in progress"
-                              ? "bg-yellow-400"
+                              ? "bg-yellow-300"
                               : "",
-                            entry.status === "completed" ? "bg-green-600" : "",
+                            entry.status === "completed" ? "bg-green-300" : "",
                             badgeClass
                           )}
                         >
                           {entry.status}
                         </span>
                       </td>
-                      <td className="  p-3 ">{entry.startDate} </td>
-                      <td className="p-3 ">{entry.dueDate}</td>
-                      <td className="p-3 ">
+                      <td className="  p-3 truncate">{entry.startDate} </td>
+                      <td className="p-3 truncate ">{entry.dueDate}</td>
+                      <td className="p-3 truncate ">
                         <TaskDetailsModal entry={entry}></TaskDetailsModal>
                       </td>
-                      <td className="p-3 rounded-r-lg ">
-                        
-                        <DeleteAlertModal setData={setData} entry={entry}></DeleteAlertModal>
+                      <td className="p-3 truncate rounded-r-lg ">
+                        <DeleteAlertModal
+                          setData={setData}
+                          entry={entry}
+                        ></DeleteAlertModal>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              
             </div>
           </>
         )}

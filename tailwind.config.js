@@ -13,7 +13,8 @@ module.exports = {
         lightGreen:"rgb(160, 254, 186)",
         veryLightGreen :"rgb(45, 53, 47)",
         fernGreen:"rgb(88, 159, 87)",
-        hunterGreen:"rgb(58, 120, 64)"
+        hunterGreen:"rgb(58, 120, 64)",
+        oliveDark:"rgb(113, 131, 85)"
 
       },
       fontFamily: {

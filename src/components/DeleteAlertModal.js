@@ -3,6 +3,8 @@ import { Fragment, useState } from 'react'
 import { IoAlertCircleOutline } from "react-icons/io5";
 import { GoAlertFill } from "react-icons/go";
 import axios from "axios";
+import { MdDeleteOutline } from "react-icons/md";
+
 
 
 export default function DeleteAlertModal({setData,entry}) {
@@ -68,7 +70,7 @@ export default function DeleteAlertModal({setData,entry}) {
           onClick={openModal}
           className="hover:text-blue-300 "
         >
-          Delete
+          <MdDeleteOutline size={24}></MdDeleteOutline>
         </button>
       </div>
 

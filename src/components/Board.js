@@ -8,6 +8,7 @@ import Tasks from './Tasks'
 import { TbProgressCheck } from "react-icons/tb";
 import { IoMdAlert } from "react-icons/io";
 import { IoIosCheckmarkCircle } from "react-icons/io";
+import SideBar from './SideBar'
 
 
 
@@ -32,7 +33,8 @@ const Board = () => {
     //   </div>
     //     <Outlet></Outlet>
     // </div>
-     <div className='w-full h-full  overflow-x-auto overflow-y-auto '>
+     <div className=' relative w-full h-full  overflow-x-auto overflow-y-auto '>
+      
      
         <Outlet ></Outlet>
     </div>
