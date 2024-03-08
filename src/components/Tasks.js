@@ -9,6 +9,9 @@ import TaskMeter from "./TaskMeter";
 import { CiFilter } from "react-icons/ci";
 import { RxCaretSort } from "react-icons/rx";
 import DeleteAlertModal from "./DeleteAlertModal";
+import { Stomp,over } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+
 
 const Tasks = () => {
   const [data, setData] = useState(null);
@@ -28,6 +31,44 @@ const Tasks = () => {
     console.log("Filtered Tasks", filteredTasks);
   }
   console.log("Filtered Tasks", filteredTasks);
+
+
+  /* ---------------------------- socket connection --------------------------- */
+  let Sock = new SockJS("http://localhost:8080/ws")
+  const onConnected=()=>{
+    console.log("Connected to socket")
+    stompClient.subscribe("/topic/greetings",(message)=>{
+      console.log("Message: " , JSON.parse(message.body))
+      setData(JSON.parse(message.body))
+    })
+  }
+
+  const onError=(err)=>{
+    console.log("Error: " + err)
+  }
+  const stompClient = Stomp.over(Sock)
+  stompClient.connect({},onConnected,onError);
+
+
+  
+
+
+  // const socketUrl = 'ws://localhost:8080/gs-guide-websocket';
+  // const socketFactory = ()=> new WebSocket(socketUrl)
+  // // const socket = new WebSocket(socketUrl);
+
+  // const stompClient = Stomp.over(socketFactory);
+
+  // stompClient.connect({},(frame)=>{
+  //   console.log("Connected to websocket")
+  //   const subscription = stompClient.subscribe('/topic/greetings',(message)=>{
+  //     console.log("Received message: " + message);
+  //   })
+  // },(error)=>{
+  //   console.error("Error in connecting to websocket",error);
+  // })
+
+  /* -------------------------- socket connection end ------------------------- */
 
   /* -------------------------------- Logic End ------------------------------- */
 

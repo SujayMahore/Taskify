@@ -22,3 +22,36 @@
 .table tr{
   border-radius: 20px;
 }
+
+.login{
+  background-image: url("./assets/login-pic.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.light{
+  
+  box-shadow : 0 0 50px #0f0,
+                0 0 100px #0f0,
+                0 0 150px #0f0,
+                0 0 200px #0f0,
+                0 0 250px #0f0,
+                0 0 250px #0f0,
+                0 0 250px #0f0,
+                0 0 250px #0f0,
+                0 0 250px #0f0,
+                0 0 250px #0f0,
+                0 0 350px #0f0;
+  animation: animate 5s linear infinite;
+ 
+  
+}
+
+@keyframes animate{
+  0%{
+    filter: hue-rotate(0deg)
+  }
+  100%{
+    filter:hue-rotate(360deg)
+  }
+}
